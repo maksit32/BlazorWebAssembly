@@ -1,0 +1,82 @@
+﻿@page "/AddItem"
+@inject ICatalog Catalog;
+
+@* добавление bootstrap *@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+
+<h3 style="text-align:center">Добавление элемента в каталог: </h3>
+<br />
+
+
+
+<EditForm Model="_model" OnValidSubmit="ProcessValidForm">
+	<DataAnnotationsValidator />
+	<table>
+		<tr class="table-primary">
+			<th>Название товара:</th>
+			<th><InputText class="table-success" @bind-Value="_model.Name" /></th>
+		</tr>
+		<tr class="table-success">
+			<th>Цена:</th>
+			<th><InputText class="table-dark" @bind-Value="_model.Price" /></th>
+		</tr>
+		<tr class="table-danger">
+			<th>Описание товара:</th>
+			<th><InputText class="table-success" @bind-Value="_model.Description" /></th>
+		</tr>
+		<tr class="table-warning">
+			<th>Ссылка на картинку:</th>
+			<th><InputText class="table-dark" @bind-Value="_model.LinkImg" /></th>
+		</tr>
+		<tr class="table-info">
+			<th>Ссылка на полное описание:</th>
+			<th><InputText class="table-success" @bind-Value="_model.FullDescriptionUrl" /></th>
+		</tr>
+		<tr class="table-warning">
+			<th>Ваша категория:</th>
+			<th><InputText class="table-dark" @bind-Value="_model.CategoryProduct" /></th>
+		</tr>
+		<tr>
+			<th><input type="submit" class="btn btn-outline-danger" value="Добавить товар в список"></th>
+		</tr>
+	</table>
+	<ValidationSummary />
+</EditForm>
+
+@code
+{
+	//к нему привязка от формы
+	private ProdModelForm _model = new();
+	private void ProcessValidForm()
+	{
+		try
+		{
+			int indexCat = FindCategoryInEnum();
+			if (indexCat >= 0)
+			{
+				Product prd = new Product(Convert.ToInt32(_model.Price), _model.Name, _model.Description, _model.LinkImg, _model.FullDescriptionUrl, (CategoriesProduct)Enum.GetValues(typeof(CategoriesProduct)).GetValue(indexCat));
+				Catalog.AddItemToCatalog(prd);
+			}
+		}
+		catch (Exception)
+		{
+			// обработать ошибку!
+		}
+	}
+
+	private int FindCategoryInEnum()
+	{
+		//получаю массив категорий
+		CategoriesProduct[] enumValues = (CategoriesProduct[])Enum.GetValues(typeof(CategoriesProduct));
+		for (int i = 0; i < enumValues.Length; i++)
+		{
+			if (enumValues[i].ToString() == _model.CategoryProduct)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+}

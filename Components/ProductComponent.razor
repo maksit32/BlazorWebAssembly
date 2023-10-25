@@ -1,0 +1,26 @@
+﻿@* часть кода компонента *@
+
+
+<tr>
+	<th>
+		<p><a href="@Product.GetUrlDescription()">@Product.GetName()</a></p>
+	</th>
+	<th>
+		<p>@Product.GetDescription()</p>
+	</th>
+	<th>
+		<p>@Product.GetPrice()</p>
+	</th>
+	<th>
+		<p>@Product.GetCategory()</p>
+	</th>
+	<th>
+		<img src="@Product.GetLinkImg()" width="250px" height="200px" />
+	</th>
+</tr>
+
+@code 
+{
+	[Parameter]
+	public Product Product { get; set; }
+}

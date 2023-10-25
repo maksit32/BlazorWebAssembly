@@ -1,0 +1,66 @@
+﻿@page "/products"
+@inject ICatalog Catalog;
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+<div>
+	<h1 style="text-align:center">Доступные категории:</h1>
+	@* ПРИВЯЗКА к параметру _id! *@
+	<select style="color:red" @bind="_id">
+		<option value="0">Cars</option>
+		<option value="1">Motorcycles</option>
+		<option value="2">Helicopters</option>
+		<option value="3">All items</option>
+	</select>
+</div>
+<div>
+	<h3>Ваш каталог: </h3>
+	<br />
+	<table>
+		<thead>
+			<tr>
+				<th>
+					Название товара:
+				</th>
+				<th>
+					Описание товара:
+				</th>
+				<th>
+					Цена:
+				</th>
+				<th>
+					Категория:
+				</th>
+				<th>
+					Изображение:
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var prd in _collection)
+			{
+				try
+				{
+					//если id == 3 (все товары печатаем из любых категорий)
+					if(_id == 3)
+					{
+						<AmazingShop.Components.ProductComponent Product="prd" />
+					}
+					@* свойство public Product, ему присвоить prd объект коллекции  (компонент)*@
+					else if (prd.GetCategory() == (CategoriesProduct)Enum.GetValues(typeof(CategoriesProduct)).GetValue(_id))
+					{
+						<AmazingShop.Components.ProductComponent Product="prd" />
+					}
+				}
+				catch (Exception)
+				{
+					//обработать ошибку
+				}
+			}
+		</tbody>
+	</table>
+</div>
+
+@code
+{
+}
